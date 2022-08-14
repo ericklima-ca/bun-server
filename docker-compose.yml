@@ -1,0 +1,23 @@
+version: "3.9" # optional since v1.27.0
+services:
+  bunserver:
+    build: .
+    deploy:
+      replicas: 3
+    networks:
+      - nginx
+  server:
+    image: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs/:/etc/nginx/ssl/live/bunserver.dev/:ro
+    networks:
+      - nginx
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - bunserver
+networks:
+  nginx:
+    driver: bridge
